@@ -1,4 +1,4 @@
-from user_management_service.db.config import DB_CONFIG
+from .config import DB_CONFIG
 from typing import Generator
 from sqlmodel import create_engine, Session
 from sqlalchemy import engine

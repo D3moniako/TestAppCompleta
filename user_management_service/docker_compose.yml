@@ -1,8 +1,0 @@
-services:
-  my_user_management_service:
-    build:
-      ./
-    ports:
-      - "8000:8000"
-    environment:
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092

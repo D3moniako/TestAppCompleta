@@ -1,8 +1,11 @@
-user_management_service/
+TestAppCompleta/
 │
 ├── user_management_service/
 │   ├── __init__.py
 │   ├── main.py
+│   ├── requirements.txt
+│   ├── docker-compose.yml
+│   ├──dockerfile
 │   ├── repository.py
 │   ├── modelli.py
 │   ├── db/
@@ -14,6 +17,7 @@ user_management_service/
 │   │       ├── config_eureka.py
 │   │   ├── logger.py
 │   │   ├── config.py
+│   ├── scripts/
+│       ├── __init__.py
+│       ├── config_eureka.py
 │
-├── docker-compose.yml
-└── .dockerignore

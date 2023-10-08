@@ -1,6 +1,6 @@
 # database manager functions to interact with database
-from user_management_service.db.engine import get_db, get_engine
-from user_management_service.db.logger import logger
+from .engine import get_db, get_engine
+from .logger import logger
 from sqlmodel.main import SQLModel
 from sqlmodel import Session
 

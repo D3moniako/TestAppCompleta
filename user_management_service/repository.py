@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlmodel import select
-from user_management_service.modelli import UserAuth, UserProfile
+from .modelli import UserAuth, UserProfile
 from typing import List
 
 class UserManagementRepository:

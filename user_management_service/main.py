@@ -1,26 +1,22 @@
+
 # user_management_service/main.py
-# user_management_service/main.py
+
 from fastapi import FastAPI, Depends, HTTPException, status
 import jwt
+from fastapi import APIRouter  # Aggiunto import per APIRouter
 
-from user_management_service.repository import UserManagementRepository
+from .repository import UserManagementRepository
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from kafka import KafkaConsumer, KafkaProducer
 import bcrypt
 import requests
 from sqlalchemy.orm import sessionmaker
 import uvicorn
-from user_management_service.db.manager import create_table
-from user_management_service.modelli import User, TokenData
-from user_management_service.db.engine import get_db, get_engine
-from user_management_service.scripts.config_eureka import eureka_config
+from .db.manager import create_table  # Aggiunto il punto prima di db
+from .modelli import User, TokenData  # Aggiunto il punto prima di modelli
+from .db.engine import get_db, get_engine
+from .scripts.config_eureka import eureka_config
 
-__package__ = "user_management_service"
-
-# ... Resto del codice ...
-
-
-__package__ = "user_management_service"
 
 app = FastAPI()
 
