@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  security_service:
+    build:
+      context: ./security_service
+    ports:
+      - "8500:8500"
+    secrets:
+      - jwt_secret
+    depends_on:
+      - kafka
+    environment:
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092  # Utilizza il nome del servizio Kafka corretto  
+
+secrets:
+  jwt_secret:
+    external: true

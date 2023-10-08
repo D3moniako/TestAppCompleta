@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  ms_event_handler:
+    build:
+      context: ./ms_event_handler
+    ports:
+      - "8502:8502"
+    depends_on:
+      # - security_service
+      - kafka
+    environment:
+      # - AUTH_MICROSERVICE_URL=http://security_service:8500
+      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+      # Aggiungi altre configurazioni Kafka necessarie per il tuo microservizio
+
+  # security_service:
+  #   build:
+  #     context: ./security_service
+  #   ports:
+  #     - "8501:8501"
+
+

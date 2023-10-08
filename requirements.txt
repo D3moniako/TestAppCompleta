@@ -1,0 +1,4 @@
+fastapi
+sqlalchemy==1.4.22
+sqlmodel==0.0.7
+kafka-python==2.0.2websockets==10.0

@@ -1,0 +1,6 @@
+fastapi
+python-jose[cryptography]
+fastapi==0.68.0
+sqlalchemy==1.4.22
+sqlmodel==0.0.7
+pyjwt==2.1.0

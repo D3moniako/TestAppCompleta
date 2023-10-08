@@ -1,0 +1,48 @@
+services:
+  app:
+    build:
+      context: ./user_management_service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - kafka
+      - eureka
+      - gateway
+      - authentication_service
+    environment:
+      - AUTHENTICATION_SERVICE_URL=http://authentication_service:5000
+      - EUREKA_SERVER=http://eureka:8761/eureka/
+
+  # Rimuovi anche la sezione relativa a evento_microservizio da qui
+  gateway:
+    build:
+      context: ./
+    ports:
+      - "8080:8080"
+    depends_on:
+      - consul
+    environment:
+      - CONSUL_HTTP_ADDR=http://consul:8500
+
+  eureka:
+    image: springcloud/eureka
+    ports:
+      - "8761:8761"
+
+  kafka:
+    image: wurstmeister/kafka
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSERISCI_IL_TUO_IP:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSERISCI_IL_TUO_IP:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENER: INSERISCI_IL_TUO_IP:PLAINTEXT
+      KAFKA_LISTENER_SECURITY_PROTOCOL: PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+    depends_on:
+      - zookeeper
+
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181:2181"

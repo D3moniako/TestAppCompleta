@@ -1,0 +1,79 @@
+project_root/
+│
+├── authentication_service/
+│   ├── main.py
+│   ├── models.py
+│   ├── repository.py
+│   ├── Dockerfile
+│   ├── docker-compose.yml.template
+│   ├── requirements.txt
+│   ├── app/
+│   │   └── __init__.py
+│   └── scripts/
+│       ├── constants.py
+│       ├── generate_docker_compose.py
+│       └── config.py
+│
+├── microservizi/
+│   ├── microservizio/
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── repository.py
+│   │   ├── decorators.py
+│   │   ├── Dockerfile
+│   │   ├── docker-compose.yml.template
+│   │   ├── requirements.txt
+│   │   ├── app/
+│   │   │   └── __init__.py
+│   │   └── scripts/
+│   │       ├── constants.py
+│   │       ├── generate_docker_compose.py
+│   │       └── config.py
+│   │
+│   ├── product_microservice/
+│   │   ├── main.py
+│   │   ├── models.py
+│   │   ├── repository.py
+│   │   ├── decorators.py
+│   │   ├── Dockerfile
+│   │   ├── docker-compose.yml.template
+│   │   ├── requirements.txt
+│   │   ├── app/
+│   │   │   └── __init__.py
+│   │   └── scripts/
+│   │       ├── constants.py
+│   │       ├── generate_docker_compose.py
+│   │       └── config.py
+│   │
+│   └── ... (altri microservizi con struttura simile)
+│
+├── kafka/
+│   └── docker-compose.yml
+│
+├── eureka/
+│   └── docker-compose.yml
+│
+├── consul/
+│   └── docker-compose.yml
+│
+│
+├── gateway/
+│   ├── main.py
+│   ├── Dockerfile
+│   ├── docker-compose.yml.template
+│   ├── requirements.txt
+│   └── scripts/
+│       ├── constants.py
+│       ├── generate_docker_compose.py
+│       └── config.py
+│
+├── scripts/
+│   ├── generate_all_docker_compose.bat
+│   ├── generate_docker_compose.py
+│   └── run_all_bat_scripts.bat
+│
+├── docker-compose.yml
+├── docker-compose-consul.yml
+├── docker-compose-gateway.yml
+└── config/
+    └── config.py

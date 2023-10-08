@@ -1,0 +1,769 @@
+2023-10-07 14:11:36,340 (ERROR) 	| [manager.py:create_table:20] 	| Impossible to create the table for the object: {new_table.__class__.__name__}
+2023-10-07 14:11:36,342 (ERROR) 	| [manager.py:create_table:23] 	| (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\db\manager.py", line 17, in create_table
+    SQLModel.metadata.create_all(db_engine)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\sql\schema.py", line 4917, in create_all
+    bind._run_ddl_visitor(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 341, in _run_ddl_visitor
+    with self.begin() as conn:
+  File "C:\Python39\lib\contextlib.py", line 117, in __enter__
+    return next(self.gen)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 379, in begin
+    with self.connect() as conn:
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 406, in connect
+    return super(Engine, self).connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3315, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 96, in __init__
+    else engine.raw_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3394, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3364, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2198, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2023-10-07 14:20:33,899 (ERROR) 	| [manager.py:create_table:20] 	| Impossible to create the table for the object: {new_table.__class__.__name__}
+2023-10-07 14:20:33,900 (ERROR) 	| [manager.py:create_table:23] 	| (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\db\manager.py", line 17, in create_table
+    SQLModel.metadata.create_all(db_engine)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\sql\schema.py", line 4917, in create_all
+    bind._run_ddl_visitor(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 341, in _run_ddl_visitor
+    with self.begin() as conn:
+  File "C:\Python39\lib\contextlib.py", line 117, in __enter__
+    return next(self.gen)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 379, in begin
+    with self.connect() as conn:
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 406, in connect
+    return super(Engine, self).connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3315, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 96, in __init__
+    else engine.raw_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3394, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3364, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2198, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2023-10-07 14:54:16,137 (ERROR) 	| [manager.py:create_table:20] 	| Impossible to create the table for the object: {new_table.__class__.__name__}
+2023-10-07 14:54:16,138 (ERROR) 	| [manager.py:create_table:23] 	| (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\db\manager.py", line 17, in create_table
+    SQLModel.metadata.create_all(db_engine)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\sql\schema.py", line 4917, in create_all
+    bind._run_ddl_visitor(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 341, in _run_ddl_visitor
+    with self.begin() as conn:
+  File "C:\Python39\lib\contextlib.py", line 117, in __enter__
+    return next(self.gen)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 379, in begin
+    with self.connect() as conn:
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 406, in connect
+    return super(Engine, self).connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3315, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 96, in __init__
+    else engine.raw_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3394, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3364, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2198, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+connection to server at "localhost" (127.0.0.1), port 5442 failed: Connection refused (0x0000274D/10061)
+	Is the server running on that host and accepting TCP/IP connections?
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2023-10-07 14:55:54,286 (ERROR) 	| [manager.py:create_table:20] 	| Impossible to create the table for the object: {new_table.__class__.__name__}
+2023-10-07 14:55:54,286 (ERROR) 	| [manager.py:create_table:23] 	| (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATALE:  autenticazione con password fallita per l'utente "root"
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATALE:  autenticazione con password fallita per l'utente "root"
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\db\manager.py", line 17, in create_table
+    SQLModel.metadata.create_all(db_engine)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\sql\schema.py", line 4917, in create_all
+    bind._run_ddl_visitor(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 341, in _run_ddl_visitor
+    with self.begin() as conn:
+  File "C:\Python39\lib\contextlib.py", line 117, in __enter__
+    return next(self.gen)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 379, in begin
+    with self.connect() as conn:
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 406, in connect
+    return super(Engine, self).connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3315, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 96, in __init__
+    else engine.raw_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3394, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3364, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2198, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATALE:  autenticazione con password fallita per l'utente "root"
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2023-10-07 14:57:27,071 (ERROR) 	| [manager.py:create_table:20] 	| Impossible to create the table for the object: {new_table.__class__.__name__}
+2023-10-07 14:57:27,071 (ERROR) 	| [manager.py:create_table:23] 	| (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATALE:  autenticazione con password fallita per l'utente "root"
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATALE:  autenticazione con password fallita per l'utente "root"
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\db\manager.py", line 17, in create_table
+    SQLModel.metadata.create_all(db_engine)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\sql\schema.py", line 4917, in create_all
+    bind._run_ddl_visitor(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 341, in _run_ddl_visitor
+    with self.begin() as conn:
+  File "C:\Python39\lib\contextlib.py", line 117, in __enter__
+    return next(self.gen)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 379, in begin
+    with self.connect() as conn:
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 406, in connect
+    return super(Engine, self).connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3315, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 96, in __init__
+    else engine.raw_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3394, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3364, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2198, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATALE:  autenticazione con password fallita per l'utente "root"
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2023-10-07 14:59:19,025 (ERROR) 	| [manager.py:create_table:20] 	| Impossible to create the table for the object: {new_table.__class__.__name__}
+2023-10-07 14:59:19,026 (ERROR) 	| [manager.py:create_table:23] 	| (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATALE:  il database "testApp" non esiste
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATALE:  il database "testApp" non esiste
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\db\manager.py", line 17, in create_table
+    SQLModel.metadata.create_all(db_engine)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\sql\schema.py", line 4917, in create_all
+    bind._run_ddl_visitor(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 341, in _run_ddl_visitor
+    with self.begin() as conn:
+  File "C:\Python39\lib\contextlib.py", line 117, in __enter__
+    return next(self.gen)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 379, in begin
+    with self.connect() as conn:
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 406, in connect
+    return super(Engine, self).connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3315, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 96, in __init__
+    else engine.raw_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3394, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3364, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2198, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATALE:  il database "testApp" non esiste
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+2023-10-07 15:01:40,602 (ERROR) 	| [manager.py:create_table:20] 	| Impossible to create the table for the object: {new_table.__class__.__name__}
+2023-10-07 15:01:40,603 (ERROR) 	| [manager.py:create_table:23] 	| (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATALE:  il database "testApp" non esiste
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+psycopg2.OperationalError: connection to server at "localhost" (::1), port 5432 failed: FATALE:  il database "testApp" non esiste
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\soler\Desktop\TestAppCompleta\db\manager.py", line 17, in create_table
+    SQLModel.metadata.create_all(db_engine)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\sql\schema.py", line 4917, in create_all
+    bind._run_ddl_visitor(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 341, in _run_ddl_visitor
+    with self.begin() as conn:
+  File "C:\Python39\lib\contextlib.py", line 117, in __enter__
+    return next(self.gen)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 379, in begin
+    with self.connect() as conn:
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\future\engine.py", line 406, in connect
+    return super(Engine, self).connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3315, in connect
+    return self._connection_cls(self, close_with_result=close_with_result)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 96, in __init__
+    else engine.raw_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3394, in raw_connection
+    return self._wrap_pool_connect(self.pool.connect, _connection)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3364, in _wrap_pool_connect
+    Connection._handle_dbapi_exception_noconnection(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 2198, in _handle_dbapi_exception_noconnection
+    util.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\base.py", line 3361, in _wrap_pool_connect
+    return fn()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 320, in connect
+    return _ConnectionFairy._checkout(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 884, in _checkout
+    fairy = _ConnectionRecord.checkout(pool)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 486, in checkout
+    rec = pool._do_get()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 146, in _do_get
+    self._dec_overflow()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\impl.py", line 143, in _do_get
+    return self._create_connection()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 266, in _create_connection
+    return _ConnectionRecord(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 381, in __init__
+    self.__connect()
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 678, in __connect
+    pool.logger.debug("Error on connect(): %s", e)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\langhelpers.py", line 70, in __exit__
+    compat.raise_(
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\util\compat.py", line 208, in raise_
+    raise exception
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\pool\base.py", line 673, in __connect
+    self.dbapi_connection = connection = pool._invoke_creator(self)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\create.py", line 578, in connect
+    return dialect.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\sqlalchemy\engine\default.py", line 598, in connect
+    return self.dbapi.connect(*cargs, **cparams)
+  File "C:\Users\soler\Desktop\TestAppCompleta\.venv\lib\site-packages\psycopg2\__init__.py", line 122, in connect
+    conn = _connect(dsn, connection_factory=connection_factory, **kwasync)
+sqlalchemy.exc.OperationalError: (psycopg2.OperationalError) connection to server at "localhost" (::1), port 5432 failed: FATALE:  il database "testApp" non esiste
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)

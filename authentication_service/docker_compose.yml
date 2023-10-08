@@ -1,0 +1,22 @@
+# docker-compose.yml
+version: '3'
+
+services:
+  ms_chat:
+    build:
+      context: ./ms_chat
+    ports:
+      - "8000:8000"
+    depends_on:
+      - authentication_service
+    environment:
+      - AUTH_MICROSERVICE_URL=http://auth_microservice:8001
+
+  authentication_service:
+    build:
+      context: ./authentication_service
+    ports:
+      - "8001:8001"
+    secrets:
+      - jwt_secret  
+
