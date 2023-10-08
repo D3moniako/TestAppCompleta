@@ -1,28 +1,14 @@
-#NOTA ORDINE ESECUZIONE IMPORTANTE
-# Usa l'immagine di Python 3.9 come base
 FROM python:3.9
 
-# Copia il tuo codice nell'immagine
-# app è da dove parte il progetto di fastapi
-COPY . /app
-
-# Imposta la directory di lavoro nel contenitore
+# Copia il microservizio nel contesto dell'immagine
 WORKDIR /app
-
-
+COPY ./ /app
 
 # Installa le dipendenze del tuo progetto
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r /app/requirements.txt
 
 # Espone la porta 8000
 EXPOSE 8000
 
-
-#script main.py sta cercando di importare moduli relativi a 
-#partire da un contesto di
-# lavoro che non comprende user_management_service come pacchetto.
 # Comando per avviare il tuo servizio quando il contenitore è in esecuzione
-CMD ["python","-m","main"]
-#-m che consente a Python di cercare moduli in un percorso 
-#relativo al percorso di 
-#esecuzione del modulo principale (user_management_service).
+CMD ["python", "/app/main.py"]
