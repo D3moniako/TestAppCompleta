@@ -56,7 +56,18 @@ services:
 
   postgres:
     image: postgres:latest
+    ports:
+    - "5432:80"
     environment:
       POSTGRES_DB: dockerdb
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: toor
+  pgadmin:
+      image: dpage/pgadmin4
+      ports:
+        - "5055:80"
+      environment:
+        PGADMIN_DEFAULT_EMAIL: "soleroboo@gmail.com"
+        PGADMIN_DEFAULT_PASSWORD: "D3mondante.@0071"
+      volumes:
+      - ./servers.json:/pgadmin4/servers.json

@@ -9,8 +9,8 @@ services:
       dockerfile: dockerfile
     ports:
       - "8000:8000"
-    environment:
-      - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    # environment:
+    #   - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
   # postgres:
   #     image: postgres:latest

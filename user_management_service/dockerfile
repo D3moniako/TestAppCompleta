@@ -1,7 +1,7 @@
 FROM python:3.9
 
 # Copia il microservizio nel contesto dell'immagine
-WORKDIR /app
+WORKDIR /user_management_service
 COPY ./user_management_service /app
 
 # Installa le dipendenze del tuo progetto
