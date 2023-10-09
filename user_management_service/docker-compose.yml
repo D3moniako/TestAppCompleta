@@ -11,3 +11,10 @@ services:
       - "8000:8000"
     environment:
       - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+
+  # postgres:
+  #     image: postgres:latest
+  #     environment:
+  #       POSTGRES_DB: dockerdb
+  #       POSTGRES_USER: postgres
+  #       POSTGRES_PASSWORD: toor

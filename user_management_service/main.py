@@ -13,8 +13,25 @@ from db.manager import create_table  # Aggiunto il punto prima di db
 from db.modelli import User, TokenData  # Aggiunto il punto prima di modelli
 from db.engine import get_db, get_engine
 from scripts.config_eureka import eureka_config
+# from your_service_discovery_module import register_service, get_services
+from db.manager import create_table, Session
 
 app = FastAPI()
+# Configurazione del servizio per la registrazione con Consul
+service_id = "your_service_id"
+service_name = "your_service_name"
+service_address = "your_service_address"
+service_port = 8000  # Sostituisci con la porta effettiva del tuo servizio
+
+# # Registra il servizio con Consul all'avvio dell'applicazione
+# @app.on_event("startup")
+# async def register_service_with_consul():
+#     register_service(service_id, service_name, service_address, service_port)
+
+# # Recupera l'elenco dei servizi registrati con Consul
+# @app.get("/services")
+# async def get_registered_services():
+#     return get_services()
 
 engine = get_engine()
 create_table()
@@ -24,6 +41,23 @@ kafka_bootstrap_servers = "localhost:9092"
 consumer = KafkaConsumer(
     "user_events", group_id="user_group", bootstrap_servers=kafka_bootstrap_servers
 )
+
+
+
+# Funzione asincrona per gestire gli eventi Kafka
+async def consume_kafka_events():
+    async for message in consumer:
+        event_data = eval(message.value)
+        if event_data["event_type"] == "user_created":
+            username = event_data["username"]
+            email = event_data["email"]
+            user_repository.create_user(
+                SessionLocal(), username, email, hashed_password="some_hashed_password"
+            )
+
+# Chiamata alla funzione asincrona
+if __name__ == "__main__":
+    asyncio.run(consume_kafka_events())
 
 app.add_middleware(
     TrustedHostMiddleware,
@@ -37,14 +71,14 @@ user_repository = repository.UserManagementRepository()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers)
 
-for message in consumer:
-    event_data = eval(message.value)
-    if event_data["event_type"] == "user_created":
-        username = event_data["username"]
-        email = event_data["email"]  # Assuming email is part of the event_data
-        user_repository.create_user(
-            SessionLocal(), username, email, hashed_password="some_hashed_password"
-        )
+# for message in consumer:
+#     event_data = eval(message.value)
+#     if event_data["event_type"] == "user_created":
+#         username = event_data["username"]
+#         email = event_data["email"]  # Assuming email is part of the event_data
+#         user_repository.create_user(
+#             SessionLocal(), username, email, hashed_password="some_hashed_password"
+#         )
 
 # Funzione per ottenere l'hash della password
 def get_password_hash(password: str):

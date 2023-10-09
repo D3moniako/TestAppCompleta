@@ -1,0 +1,17 @@
+# Usa un'immagine base con Python
+FROM python:3.9
+
+# Imposta il working directory all'interno del contenitore
+WORKDIR /app
+
+# Copia il codice del servizio gateway nella directory del contenitore
+COPY ./gateway /app
+
+# Installa le dipendenze del servizio gateway
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Espone la porta 80 per il traffico HTTP
+EXPOSE 80
+
+# Comando per avviare il servizio gateway quando il contenitore è in esecuzione
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "80"]
