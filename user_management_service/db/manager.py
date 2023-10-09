@@ -1,10 +1,10 @@
 # database manager functions to interact with database
+
+
 from .engine import get_db, get_engine
 from .logger import logger
 from sqlmodel.main import SQLModel
 from sqlmodel import Session
-
-
 
 # create table
 def create_table() -> bool:

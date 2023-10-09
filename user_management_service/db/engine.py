@@ -1,17 +1,24 @@
-from .config import DB_CONFIG
 from typing import Generator
 from sqlmodel import create_engine, Session
 from sqlalchemy import engine
 from pyramid.config import Configurator
 
-
+#################
+import os
+DB_CONFIG = {
+    "db_name": os.getenv("DB_NAME", "fastApp"),
+    "db_user": os.getenv("DB_USER", "postgres"),
+    "db_password": os.getenv("DB_PASSWORD", "toor"), ## PASSWORD DA RICORDARE!!!
+    "db_port": os.getenv("DB_PORT", "5432"),
+    "db_host": os.getenv("DB_HOST", "localhost"),
+}
 
 def get_db():
     try:
         config = Configurator()
         config.scan(
-            # "app.src.models"
-            "user_management_service.modelli"  ###IMPORTANTE NON CANCELLARE è IL PATH DA CUI  CARICA I MODELLI
+            # "app.src.models"    # senza docker user_management_service.models
+            "."  ###IMPORTANTE NON CANCELLARE è IL PATH DA CUI  CARICA I MODELLI
             
         )  # need to scan a folder and import classes and models
         engine = get_engine()

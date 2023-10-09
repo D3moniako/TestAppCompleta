@@ -6,7 +6,7 @@ import logging  # using standard library
 import os
 
 # VERBOSITY = info as default, #debug for local dev
-from user_management_service.db.config import APP_VERBOSITY  # Aggiunto import corretto
+from .config import APP_VERBOSITY  # Aggiunto import corretto
 from logging.handlers import RotatingFileHandler
 
 # from logging.handlers import TimeRotatingFileHandler
