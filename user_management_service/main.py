@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.responses import HTMLResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import jwt
 from fastapi import APIRouter  # Aggiunto import per APIRouter
@@ -38,9 +39,9 @@ create_table()
 SessionLocal = get_db()
 
 kafka_bootstrap_servers = "localhost:9092"
-consumer = KafkaConsumer(
-    "user_events", group_id="user_group", bootstrap_servers=kafka_bootstrap_servers
-)
+# consumer = KafkaConsumer(
+#     "user_events", group_id="user_group", bootstrap_servers=kafka_bootstrap_servers
+# )
 
 
 
@@ -55,9 +56,9 @@ async def consume_kafka_events():
                 SessionLocal(), username, email, hashed_password="some_hashed_password"
             )
 
-# Chiamata alla funzione asincrona
-if __name__ == "__main__":
-    asyncio.run(consume_kafka_events())
+# # Chiamata alla funzione asincrona
+# if __name__ == "__main__":
+#     asyncio.run(consume_kafka_events())
 
 app.add_middleware(
     TrustedHostMiddleware,
@@ -69,7 +70,7 @@ router = APIRouter()
 user_repository = repository.UserManagementRepository()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers)
+# producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers)
 
 # for message in consumer:
 #     event_data = eval(message.value)
@@ -159,6 +160,21 @@ def register_with_auth_service():
             status_code=response.status_code,
             detail="Failed to register with authentication service",
         )
+@app.get("/html", response_class=HTMLResponse)
+def get_html():
+    print("dall'html di MERDA")  # Aggiunto per il debug
+    content = """
+    <html>
+        <head>
+            <title>Test HTML Endpoint</title>
+        </head>
+        <body>
+            <h1>Provalaaaaaaaaaaaa</h1>
+            <p>You can customize this HTML content based on your needs.</p>
+        </body>
+    </html>
+    """
+    return HTMLResponse(content=content)
 
 app.include_router(router)
 
