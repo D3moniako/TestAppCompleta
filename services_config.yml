@@ -1,0 +1,20 @@
+# services_config.yaml
+
+services:
+  fastapi_service:
+    context: ./fastapi_service
+    ports:
+      - "8000:80"
+    depends_on:
+      - consul
+    environment:
+      - CONSUL_HTTP_ADDR=${CONSUL_HTTP_ADDR}
+      - SERVICE_NAME=${SERVICE_NAME}
+      - SERVICE_PORT=${SERVICE_PORT}
+    restart: "unless-stopped"
+    command: ["sh", "-c", "python main.py"]
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:80/health"]
+      interval: 1s
+      timeout: 3s
+      retries: 30

@@ -5,7 +5,7 @@ FROM python:3.9
 WORKDIR /app
 
 # Copia il codice del servizio gateway nella directory del contenitore
-COPY ./gateway /app
+COPY ./ /app
 
 # Installa le dipendenze del servizio gateway
 RUN pip install --no-cache-dir -r /app/requirements.txt
