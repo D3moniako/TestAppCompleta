@@ -8,7 +8,12 @@ app = FastAPI()
 @app.get("/health")
 async def health():
     return {"status": "ok"}
-
+@app.get("/fast")
+async def ciao():
+    return {"message": "ciao dal primo livello"}
+@app.get("/fast/lv2")
+async def benvenuto():
+    return {"message": "ciao dal secondo livello"}
 if __name__ == "__main__":
     service_name = "fastapi_service"
     service_port = 80

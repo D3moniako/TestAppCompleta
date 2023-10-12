@@ -30,3 +30,10 @@ services:
       interval: 1s
       timeout: 3s
       retries: 3
+  nginx:
+    build: ./nginx
+    ports:
+      - "8081:8081"
+    depends_on:
+      - consul
+      - fastapi_service    
