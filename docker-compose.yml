@@ -22,6 +22,27 @@ services:
       timeout: 3s
       retries: 30
 
+  fastapi_service:
+    build:
+      context: ./fastapi_service
+    ports:
+      - "8001:80" #ERA 8000:8000
+    depends_on:
+      - consul
+      - kafka
+      - postgres
+    environment:
+      - CONSUL_HTTP_ADDR=consul:8500
+      - SERVICE_NAME=fastapi_service
+      - SERVICE_PORT=80
+    restart: "unless-stopped"
+    command: ["sh", "-c", "python main.py"]  # Cambiato il comando di avvio
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:80/health"]
+      interval: 1s
+      timeout: 3s
+      retries: 30    
+
 
   consul:
     image: consul:1.10.3
@@ -38,7 +59,8 @@ services:
       - "8081:8081"
     depends_on:
       - consul
-      - user_management_service     
+      - user_management_service
+      - fastapi_service     
   postgres:
     image: postgres:latest
     ports:

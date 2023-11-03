@@ -1,66 +1,53 @@
 import asyncio
-from registrazione_service import register_service
-from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.responses import HTMLResponse
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 import jwt
-from fastapi import APIRouter  # Aggiunto import per APIRouter
-
-import repository                       
-from starlette.middleware.trustedhost import TrustedHostMiddleware
-from kafka import KafkaConsumer, KafkaProducer
 import bcrypt
 import requests
 import uvicorn
-from db.manager import create_table  # Aggiunto il punto prima di db
-from db.modelli import User, TokenData  # Aggiunto il punto prima di modelli
+from fastapi.responses import HTMLResponse
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, status
+import logging
+from starlette.middleware.trustedhost import TrustedHostMiddleware
+from confluent_kafka import Producer, Consumer, KafkaError
+
+import repository
+from db.manager import create_table, Session
+from db.modelli import User, TokenData
 from db.engine import get_db, get_engine
 from scripts.config_eureka import eureka_config
-# from your_service_discovery_module import register_service, get_services
-from db.manager import create_table, Session
+from registrazione_service import register_service
 
 app = FastAPI()
-# Configurazione del servizio per la registrazione con Consul
-# service_id = "your_service_id"
-# service_name = "your_service_name"
-# service_address = "your_service_address"
-# service_port = 8000  # Sostituisci con la porta effettiva del tuo servizio
-
-# # Registra il servizio con Consul all'avvio dell'applicazione
-# @app.on_event("startup")
-# async def register_service_with_consul():
-#     register_service(service_id, service_name, service_address, service_port)
-
-# # Recupera l'elenco dei servizi registrati con Consul
-# @app.get("/services")
-# async def get_registered_services():
-#     return get_services()
 
 engine = get_engine()
 create_table()
 SessionLocal = get_db()
 
 kafka_bootstrap_servers = "localhost:9092"
-consumer = KafkaConsumer(
-    "user_events", group_id="user_group", bootstrap_servers=kafka_bootstrap_servers
+consumer = Consumer(
+    {"bootstrap.servers": kafka_bootstrap_servers, "group.id": "user_group"}
 )
-
-
 
 # Funzione asincrona per gestire gli eventi Kafka
 async def consume_kafka_events():
-    async for message in consumer:
-        event_data = eval(message.value)
+    consumer.subscribe(["user_events"])
+    while True:
+        msg = consumer.poll(1.0)
+        if msg is None:
+            continue
+        if msg.error():
+            if msg.error().code() == KafkaError._PARTITION_EOF:
+                continue
+            else:
+                print(msg.error())
+                break
+        event_data = eval(msg.value().decode("utf-8"))
         if event_data["event_type"] == "user_created":
             username = event_data["username"]
             email = event_data["email"]
             user_repository.create_user(
                 SessionLocal(), username, email, hashed_password="some_hashed_password"
             )
-
-# # Chiamata alla funzione asincrona
-# if __name__ == "__main__":
-#     asyncio.run(consume_kafka_events())
 
 app.add_middleware(
     TrustedHostMiddleware,
@@ -72,16 +59,7 @@ router = APIRouter()
 user_repository = repository.UserManagementRepository()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers)
-
-for message in consumer:
-    event_data = eval(message.value)
-    if event_data["event_type"] == "user_created":
-        username = event_data["username"]
-        email = event_data["email"]  # Assuming email is part of the event_data
-        user_repository.create_user(
-            SessionLocal(), username, email, hashed_password="some_hashed_password"
-        )
+producer = Producer({"bootstrap.servers": kafka_bootstrap_servers})
 
 # Funzione per ottenere l'hash della password
 def get_password_hash(password: str):
@@ -96,7 +74,7 @@ async def send_event():
     event_data = {"event_type": "custom_event", "data": "Dati personalizzati"}
 
     # Invia l'evento a Kafka
-    producer.send("user_events", value=str(event_data))
+    producer.produce("user_events", value=str(event_data))
 
     return {"message": "Evento inviato con successo a Kafka"}
 
@@ -115,13 +93,6 @@ def create_jwt_token(data: dict):
 #             headers={"WWW-Authenticate": "Bearer"},
 #         )
 
-#     token_data = {
-#         "sub": user.username,
-#         "scopes": ["me"],
-#     }
-#     token = create_jwt_token(token_data)
-#     return {"access_token": token, "token_type": "bearer"}
-
 # @router.get("/users/me", response_model=User)
 # async def read_users_me(current_user: User = Depends(user_repository.get_current_user)):
 #     return current_user
@@ -133,7 +104,7 @@ def create_jwt_token(data: dict):
 
 #     # Invia l'evento di creazione utente a Kafka
 #     event_data = {"event_type": "user_created", "username": user.username}
-#     producer.send("user_events", value=str(event_data))
+#     producer.produce("user_events", value=str(event_data))
 
 #     return user
 
@@ -187,6 +158,25 @@ async def health():
     return {"status": "ok"}             
 app.include_router(router)
 
+# Aggiungi configurazione per il logging
+logging.basicConfig(level=logging.INFO)
+
+# ...
+
+@app.post("/handle_comment_submission")
+async def handle_comment_submission(event_data: dict):
+    # Esegui le operazioni necessarie per elaborare il commento
+    username = event_data.get("username", "")
+    product_id = event_data.get("product_id", "")
+    comment = event_data.get("comment", "")
+
+    # Aggiungi logica per gestire il commento
+    logging.info(f"Received comment for product {product_id} from user {username}: {comment}")
+
+    # Aggiungi logica aggiuntiva se necessario
+
+    return {"message": "Comment handled successfully"}
+
 if __name__ == "__main__":
     service_name = "user_management_service"
     service_port = 80
@@ -194,7 +184,7 @@ if __name__ == "__main__":
     loop = asyncio.get_event_loop()
     loop.run_until_complete(register_service(service_name, service_port))
     
-    asyncio.run(consume_kafka_events())
-
+    # Esegui la funzione consume_kafka_events in un thread separato
+    asyncio.ensure_future(consume_kafka_events())
     # Avvia il server Uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=service_port, reload=True)
