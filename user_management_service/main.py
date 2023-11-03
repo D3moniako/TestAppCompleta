@@ -1,3 +1,5 @@
+import asyncio
+from registrazione_service import register_service
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.responses import HTMLResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -19,10 +21,10 @@ from db.manager import create_table, Session
 
 app = FastAPI()
 # Configurazione del servizio per la registrazione con Consul
-service_id = "your_service_id"
-service_name = "your_service_name"
-service_address = "your_service_address"
-service_port = 8000  # Sostituisci con la porta effettiva del tuo servizio
+# service_id = "your_service_id"
+# service_name = "your_service_name"
+# service_address = "your_service_address"
+# service_port = 8000  # Sostituisci con la porta effettiva del tuo servizio
 
 # # Registra il servizio con Consul all'avvio dell'applicazione
 # @app.on_event("startup")
@@ -39,9 +41,9 @@ create_table()
 SessionLocal = get_db()
 
 kafka_bootstrap_servers = "localhost:9092"
-# consumer = KafkaConsumer(
-#     "user_events", group_id="user_group", bootstrap_servers=kafka_bootstrap_servers
-# )
+consumer = KafkaConsumer(
+    "user_events", group_id="user_group", bootstrap_servers=kafka_bootstrap_servers
+)
 
 
 
@@ -70,16 +72,16 @@ router = APIRouter()
 user_repository = repository.UserManagementRepository()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-# producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers)
+producer = KafkaProducer(bootstrap_servers=kafka_bootstrap_servers)
 
-# for message in consumer:
-#     event_data = eval(message.value)
-#     if event_data["event_type"] == "user_created":
-#         username = event_data["username"]
-#         email = event_data["email"]  # Assuming email is part of the event_data
-#         user_repository.create_user(
-#             SessionLocal(), username, email, hashed_password="some_hashed_password"
-#         )
+for message in consumer:
+    event_data = eval(message.value)
+    if event_data["event_type"] == "user_created":
+        username = event_data["username"]
+        email = event_data["email"]  # Assuming email is part of the event_data
+        user_repository.create_user(
+            SessionLocal(), username, email, hashed_password="some_hashed_password"
+        )
 
 # Funzione per ottenere l'hash della password
 def get_password_hash(password: str):
@@ -176,7 +178,23 @@ def get_html():
     """
     return HTMLResponse(content=content)
 
+@app.get('/ciao')
+async def saluta():
+    return{"message":" CIAO DAL MICROSERVIZO USER_MANAGEMENT"}
+
+@app.get("/health")
+async def health():
+    return {"status": "ok"}             
 app.include_router(router)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=8001)
+    service_name = "user_management_service"
+    service_port = 80
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(register_service(service_name, service_port))
+    
+    asyncio.run(consume_kafka_events())
+
+    # Avvia il server Uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=service_port, reload=True)

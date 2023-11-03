@@ -6,11 +6,11 @@ from pyramid.config import Configurator
 #################
 import os
 DB_CONFIG = {
-    "db_name": os.getenv("DB_NAME", "fastApp"),
+    "db_name": os.getenv("DB_NAME", "dockerdb"),
     "db_user": os.getenv("DB_USER", "postgres"),
     "db_password": os.getenv("DB_PASSWORD", "toor"), ## PASSWORD DA RICORDARE!!!
     "db_port": os.getenv("DB_PORT", "5432"),
-    "db_host": os.getenv("DB_HOST", "localhost"),
+    "db_host": os.getenv("DB_HOST", "localhost"), #nome oppure ip
 }
 
 def get_db():
@@ -43,13 +43,13 @@ def get_engine() -> engine:
     ):
         raise Exception("Bad config file: " + DB_CONFIG)
 
-    url = "postgresql://{user}:{passwd}@{host}:{port}/{db}".format(
-        user=DB_CONFIG["db_user"],
-        passwd=DB_CONFIG["db_password"],
-        host=DB_CONFIG["db_host"],
-        port=DB_CONFIG["db_port"],
-        db=DB_CONFIG["db_name"],
-    )
+    url = "postgresql://{user}:{passwd}@postgres:{port}/{db}".format(
+    user=DB_CONFIG["db_user"],
+    passwd=DB_CONFIG["db_password"],
+    port=DB_CONFIG["db_port"],
+    db=DB_CONFIG["db_name"],
+)
+
     engine = create_engine(url=url, pool_size=50)
     return engine
 

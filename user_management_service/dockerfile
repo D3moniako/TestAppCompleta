@@ -1,15 +1,16 @@
 FROM python:3.9
 
 # Copia il microservizio nel contesto dell'immagine
-WORKDIR /user_management_service
-COPY ./user_management_service /app
+WORKDIR /app
+
+COPY . /app
 
 # Installa le dipendenze del tuo progetto
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-# Espone la porta 8000
-EXPOSE 8000
+# # Espone la porta 8000
+# EXPOSE 8000
 
-# Comando per avviare il tuo servizio quando il contenitore è in esecuzione
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# # Comando per avviare il tuo servizio quando il contenitore è in esecuzione
+# CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
 

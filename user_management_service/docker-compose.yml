@@ -1,20 +1,20 @@
         # Cambiato il percorso per puntare alla directory corrente , mentre il./ sottodirectory
+#NON VIENE USATO
+# version: "3.8"
 
-version: "3.8"
+# services:
+#   user_management_service:
+#     build:
+#       context: .  # Cambiato il percorso per puntare alla directory corrente , mentre il./ sottodirectory
+#       dockerfile: dockerfile
+#     ports:
+#       - "8000:8000"
+#     # environment:
+#     #   - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
 
-services:
-  user_management_service:
-    build:
-      context: .  # Cambiato il percorso per puntare alla directory corrente , mentre il./ sottodirectory
-      dockerfile: dockerfile
-    ports:
-      - "8000:8000"
-    # environment:
-    #   - KAFKA_BOOTSTRAP_SERVERS=kafka:9092
-
-  # postgres:
-  #     image: postgres:latest
-  #     environment:
-  #       POSTGRES_DB: dockerdb
-  #       POSTGRES_USER: postgres
-  #       POSTGRES_PASSWORD: toor
+#   # postgres:
+#   #     image: postgres:latest
+#   #     environment:
+#   #       POSTGRES_DB: dockerdb
+#   #       POSTGRES_USER: postgres
+#   #       POSTGRES_PASSWORD: toor
