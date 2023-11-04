@@ -32,8 +32,6 @@ consumer = Consumer(
     {
         "bootstrap.servers": kafka_bootstrap_servers,
         "group.id": "user_group",
-        "auto.offset.reset": "earliest",  # Imposta il punto di partenza a "earliest"
-        "enable.auto.commit": False,  # Disabilita il commit automatico
     }
 )
 
