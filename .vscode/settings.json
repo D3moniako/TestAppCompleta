@@ -1,3 +1,15 @@
 {
-    "python.analysis.typeCheckingMode": "off"
+    "python.analysis.typeCheckingMode": "off",
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "local db",
+            "group": "Server Group 1",
+            "username": "postgres",
+            "database": "dockerdb"
+        }
+    ]
 }

@@ -10,7 +10,7 @@ import logging
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from confluent_kafka import Producer, Consumer, KafkaError
 
-import repository
+from repository import UserManagementRepository, SecurityRepository
 from db.manager import create_table, Session
 from db.modelli import User, TokenData
 from db.engine import get_db, get_engine
@@ -18,51 +18,66 @@ from scripts.config_eureka import eureka_config
 from registrazione_service import register_service
 
 app = FastAPI()
+router = APIRouter()
+user_repository = UserManagementRepository()
+security_repository = SecurityRepository()  # Aggiunto l'invocazione della classe
 
 engine = get_engine()
 create_table()
 SessionLocal = get_db()
 
-kafka_bootstrap_servers = "localhost:9092"
+kafka_bootstrap_servers = "kafka:9092"
+
 consumer = Consumer(
-    {"bootstrap.servers": kafka_bootstrap_servers, "group.id": "user_group"}
+    {
+        "bootstrap.servers": kafka_bootstrap_servers,
+        "group.id": "user_group",
+        "auto.offset.reset": "earliest",  # Imposta il punto di partenza a "earliest"
+        "enable.auto.commit": False,  # Disabilita il commit automatico
+    }
 )
 
 # Funzione asincrona per gestire gli eventi Kafka
 async def consume_kafka_events():
+    print("Trying to connect to Kafka broker...")
     consumer.subscribe(["user_events"])
-    while True:
-        msg = consumer.poll(1.0)
-        if msg is None:
-            continue
-        if msg.error():
-            if msg.error().code() == KafkaError._PARTITION_EOF:
+    try:
+        while True:
+            msg = consumer.poll(1.0)
+            if msg is None:
                 continue
-            else:
-                print(msg.error())
-                break
-        event_data = eval(msg.value().decode("utf-8"))
-        if event_data["event_type"] == "user_created":
-            username = event_data["username"]
-            email = event_data["email"]
-            user_repository.create_user(
-                SessionLocal(), username, email, hashed_password="some_hashed_password"
-            )
+            if msg.error():
+                if msg.error().code() == KafkaError._PARTITION_EOF:
+                    continue
+                else:
+                    print(f"Kafka error: {msg.error()}")
+                    break
+            event_data = eval(msg.value().decode("utf-8"))
+            print(f"Received Kafka event: {event_data}")  # Stampa l'evento Kafka ricevuto
+            if event_data["event_type"] == "user_created":
+                username = event_data["username"]
+                email = event_data["email"]
+                print(f"Creating user: {username}, Email: {email}")  # Stampa le informazioni dell'utente
+                user_repository.create_user(
+                    SessionLocal(), username, email, hashed_password="some_hashed_password"
+                )
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        consumer.close()
+
+
 
 app.add_middleware(
     TrustedHostMiddleware,
     allowed_hosts=["*"],
 )
 
-app.eureka_config = eureka_config
-router = APIRouter()
-user_repository = repository.UserManagementRepository()
-
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 producer = Producer({"bootstrap.servers": kafka_bootstrap_servers})
 
 # Funzione per ottenere l'hash della password
-def get_password_hash(password: str):
+def get_password_hash(password: str):      
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
     return hashed_password.decode("utf-8")
@@ -78,49 +93,34 @@ async def send_event():
 
     return {"message": "Evento inviato con successo a Kafka"}
 
-# Funzione per creare un token JWT
-def create_jwt_token(data: dict):
-    to_encode = data.copy()
-    return jwt.encode(to_encode, "SECRET_KEY", algorithm="HS256")
+# Funzione per registrare utente
+@router.post("/register_user", response_model=User)
+async def register_user(username: str, password: str, email: str, db: Session = Depends(get_db)):
+    hashed_password = get_password_hash(password)
+    user = user_repository.create_user(db, username, email, hashed_password)
 
-# @router.post("/token")
-# async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-#     user = user_repository.authenticate_user(form_data.username, form_data.password)
-#     if not user:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED,
-#             detail="Incorrect username or password",
-#             headers={"WWW-Authenticate": "Bearer"},
-#         )
+    # Invia l'evento di creazione utente a Kafka
+    event_data = {"event_type": "user_created", "username": user.username}
+    producer.produce("user_events", value=str(event_data))
 
-# @router.get("/users/me", response_model=User)
-# async def read_users_me(current_user: User = Depends(user_repository.get_current_user)):
-#     return current_user
+    return user
 
-# @router.post("/register_user", response_model=User)
-# async def register_user(username: str, password: str, db: Session = Depends(get_db)):
-#     hashed_password = get_password_hash(password)
-#     user = user_repository.create_user(db, username, hashed_password)
-
-#     # Invia l'evento di creazione utente a Kafka
-#     event_data = {"event_type": "user_created", "username": user.username}
-#     producer.produce("user_events", value=str(event_data))
-
-#     return user
-
-# @router.get("/secure-endpoint/", response_model=dict)
-# async def secure_endpoint(
-#     current_user: TokenData = Depends(user_repository.get_current_user),
-# ):
-#     user = user_repository.get_user_by_username(current_user.username)
-#     return {
-#         "message": "This is a secure endpoint!",
-#         "username": user.username,
-#         "email": user.email,
-#     }
+# In sintesi, questa funzione rappresenta un endpoint sicuro che restituisce alcune informazioni 
+# sull'utente corrente autenticato in risposta a una richiesta GET a "/secure-endpoint/".
+@router.get("/secure-endpoint/", response_model=dict)
+async def secure_endpoint(
+    current_user: TokenData = Depends(security_repository.verify_token),
+    user_repo: UserManagementRepository = Depends(),
+):
+    user = user_repo.get_user_by_username(current_user.username)
+    return {
+        "message": "This is a secure endpoint!",
+        "username": user.username,
+        "email": user.email,
+    }
 
 # Funzione per registrare il microservizio presso il servizio di autenticazione
-def register_with_auth_service():
+def register_with_auth_service():  
     auth_service_url = "http://authentication_service:8000/register_microservice"
     service_name = "user_management"  # Sostituisci con il nome del tuo microservizio
 
@@ -133,6 +133,9 @@ def register_with_auth_service():
             status_code=response.status_code,
             detail="Failed to register with authentication service",
         )
+
+# Altri endpoint e configurazioni...
+
 @app.get("/html", response_class=HTMLResponse)
 def get_html():
     print("dall'html di MERDA")  # Aggiunto per il debug
