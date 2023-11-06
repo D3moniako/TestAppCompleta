@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlmodel import select
-from db.modelli import UserAuth,User, UserProfile,UserRole,TokenData,RegisteredMicroservice
 from typing import List,Optional
+from db.modelli import UserAuth, User, UserProfile, UserRole, TokenData, RegisteredMicroservice
 
 from jose import JWTError,jwt
 from fastapi import Depends, HTTPException, status
@@ -17,12 +17,12 @@ class UserManagementRepository:
         db.refresh(user)
         return user
 
-    def create_user(self, db: Session, username: str, email: str, hashed_password: str) -> UserAuth:
-       user = User(username=username, email=email, hashed_password=hashed_password)
-       db.add(user)
-       db.commit()
-       db.refresh(user)
-       return user
+    def create_user(self, db: Session, username: str, email: str, hashed_password: str) -> User:
+        user = User(username=username, email=email, hashed_password=hashed_password)
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        return user
     ###
     
     
