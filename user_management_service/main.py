@@ -12,7 +12,7 @@ from confluent_kafka import Producer, Consumer, KafkaError
 
 from repository import UserManagementRepository, SecurityRepository
 from db.manager import create_table, Session
-from db.modelli import User, TokenData
+from db.modelli import Utente, TokenData
 from db.engine import get_db, get_engine
 from scripts.config_eureka import eureka_config
 from registrazione_service import register_service
@@ -24,7 +24,14 @@ security_repository = SecurityRepository()  # Aggiunto l'invocazione della class
 
 engine = get_engine()
 create_table()
-SessionLocal = get_db()
+# Modifica il tuo codice per definire SessionLocal come funzione
+def get_session_local():
+    engine = get_db()
+    return Session(bind=engine)  # Cambia questa riga
+
+
+# Nel tuo main.py, usa get_session_local() invece di SessionLocal()
+SessionLocal = get_session_local()
 
 kafka_bootstrap_servers = "kafka:9092"
 
@@ -56,9 +63,12 @@ async def consume_kafka_events():
                 username = event_data["username"]
                 email = event_data["email"]
                 print(f"Creating user: {username}, Email: {email}")  # Stampa le informazioni dell'utente
+                db_session = get_session_local()            
                 user_repository.create_user(
-                    SessionLocal(), username, email, hashed_password="some_hashed_password"
+                    db_session, username, email, hashed_password="some_hashed_password"
                 )
+                # Chiudi la sessione dopo l'uso
+                db_session.close()
     except Exception as e:
         print(f"An error occurred: {e}")
     finally:
@@ -92,12 +102,13 @@ async def send_event():
     return {"message": "Evento inviato con successo a Kafka"}
 
 # Funzione per registrare utente
-@router.post("/register_user", response_model=User)
-async def register_user(username: str, password: str, email: str, db: Session = Depends(get_db)):
-    print("Registrazione 11 in corso CIAOOOO")
+@router.post("/register_user", response_model=Utente)
+async def register_user(username: str, password: str, email: str, db: Session = Depends(get_session_local)):
+  
+    print("Registrazione  22 in corso CIAOOOO")
     hashed_password = get_password_hash(password)
     user = user_repository.create_user(db, username, email, hashed_password)
-
+    
     # Invia l'evento di creazione utente a Kafka
     event_data = {"event_type": "user_created", "username": user.username}
     producer.produce("user_events", value=str(event_data))

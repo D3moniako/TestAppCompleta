@@ -2,17 +2,13 @@ from typing import Optional
 from typing import List
 \
 from sqlmodel import SQLModel, Field, Relationship, Column
-from sqlalchemy import String
+from sqlalchemy import String, null
 
 class TokenData(SQLModel):###
     sub: str
 #     scopes: List[str] = []
 
-class UserRoleBase(SQLModel):
-    role_name: str
-# class UserRolesLink(SQLModel, table=True):
-#     user_id: int = Field(default=None, foreign_key="user.id", primary_key=True)
-#     role_id: int = Field(default=None, foreign_key="userrole.id", primary_key=True)
+
 class UserRole(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     role_name: str = Field(index=True, unique=True)
@@ -21,28 +17,35 @@ class UserProfile(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     bio: str
     website: str
-    user_id: Optional[int] = Field(default=None, foreign_key="user.id")
+    utente_id: Optional[int] = Field(default=None, foreign_key="utente.id")
 
-class User(SQLModel, table=True):
+class Utente(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(index=True, unique=True)
+    email: str= Field(default=None,nullable=False,unique=True)
+    hashed_password: str=Field(default=None,nullable=False)
     role_id: Optional[int] = Field(default=None, foreign_key="userrole.id")
     profile_id: Optional[int] = Field(default=None, foreign_key="userprofile.id")
+   
 
 class UserAuth(SQLModel, table=True):
     id: Optional[int]= Field(default=None,primary_key=True)
-    username: str
-    password: str
+    username: str =Field(default=None,nullable=False,unique=True)
+    password: str =Field(default=None,nullable=False)
     roles_id: Optional[int] = Field(default=None, foreign_key="userrole.id")
     profile_id: Optional[int] = Field(default=None, foreign_key="userprofile.id")
 
-
-class UserBase(SQLModel):
+#################################################################
+class UtenteBase(SQLModel):
     username: str
     email: str
     hashed_password: str
 
-
+class UserRoleBase(SQLModel):
+    role_name: str
+# class UserRolesLink(SQLModel, table=True):
+#     user_id: int = Field(default=None, foreign_key="user.id", primary_key=True)
+#     role_id: int = Field(default=None, foreign_key="userrole.id", primary_key=True)
 class UserProfileBase(SQLModel):
     bio: str
     website: str

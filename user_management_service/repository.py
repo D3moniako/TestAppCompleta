@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlmodel import select
 from typing import List,Optional
-from db.modelli import UserAuth, User, UserProfile, UserRole, TokenData, RegisteredMicroservice
+from db.modelli import UserAuth, Utente, UserProfile, UserRole, TokenData, RegisteredMicroservice
 
 from jose import JWTError,jwt
 from fastapi import Depends, HTTPException, status
@@ -11,18 +11,27 @@ class UserManagementRepository:
     
     ###
     def create_user_auth(self, db: Session, username: str, email: str, hashed_password: str) -> UserAuth:
-        user = UserAuth(username=username, email=email, hashed_password=hashed_password)
-        db.add(user)
+        utente_auth = UserAuth(username=username, email=email, hashed_password=hashed_password)
+        db.add(utente_auth)
         db.commit()
-        db.refresh(user)
-        return user
+        db.refresh(utente_auth)
+        return utente_auth
 
-    def create_user(self, db: Session, username: str, email: str, hashed_password: str) -> User:
-        user = User(username=username, email=email, hashed_password=hashed_password)
-        db.add(user)
-        db.commit()
-        db.refresh(user)
-        return user
+    
+    ###
+    def create_user(self, db: Session, username: str, email: str, hashed_password: str) -> Utente:
+        try:
+            utente = Utente(username=username, email=email, hashed_password=hashed_password)
+            db.add(utente)
+            db.commit()
+            db.refresh(utente)
+            return utente
+        except Exception as e:
+            print(f"ERRORE NELLA CREAZIONE DELL 'UTENTE: {e}")
+            db.rollback()
+            # Gestisci l'eccezione o loggala in modo appropriato
+            return None
+
     ###
     
     
@@ -56,8 +65,8 @@ class UserManagementRepository:
         db.refresh(user)
     ################################################################
    
-    def get_user_by_username(self, db: Session, username: str) -> User:
-        return db.exec(select(User).where(User.username == username)).first()
+    def get_user_by_username(self, db: Session, username: str) -> Utente:
+        return db.exec(select(Utente).where(Utente.username == username)).first()
 
     
     ########################################################################        
