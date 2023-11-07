@@ -94,6 +94,7 @@ async def send_event():
 # Funzione per registrare utente
 @router.post("/register_user", response_model=User)
 async def register_user(username: str, password: str, email: str, db: Session = Depends(get_db)):
+    print("Registrazione 11 in corso CIAOOOO")
     hashed_password = get_password_hash(password)
     user = user_repository.create_user(db, username, email, hashed_password)
 
