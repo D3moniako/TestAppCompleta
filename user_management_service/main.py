@@ -10,6 +10,7 @@ import logging
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from confluent_kafka import Producer, Consumer, KafkaError
 
+
 from repository import UserManagementRepository, SecurityRepository
 from db.manager import create_table, Session
 from db.modelli import Utente, TokenData
@@ -83,13 +84,74 @@ app.add_middleware(
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 producer = Producer({"bootstrap.servers": kafka_bootstrap_servers})
-
+#########################SICUREZZA#############################
 # Funzione per ottenere l'hash della password
 def get_password_hash(password: str):      
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode("utf-8"), salt)
     return hashed_password.decode("utf-8")
 
+# Funzione per creare un token JWT
+def create_jwt_token(data: dict):
+    to_encode = data.copy()
+    return jwt.encode(to_encode, "SECRET_KEY", algorithm="HS256")
+# ottieni token 
+@router.post("/token")
+async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_session_local)):
+    user = security_repository.authenticate_user(db, form_data.username, form_data.password)
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    token_data = {
+        "sub": user.username,
+        "scopes": ["me"],
+    }
+    token = create_jwt_token(token_data)
+    return {"access_token": token, "token_type": "bearer"}
+####ottieni utente loggato
+
+# Definisci la dipendenza per ottenere il token
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# Funzione per ottenere l'utente dal token
+def get_user_from_token(token: str = Depends(oauth2_scheme),db: Session = Depends(get_session_local)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Impossibile convalidare le credenziali",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    try:
+        # Decodifica il token
+        payload = jwt.decode(token, "SECRET_KEY", algorithms=["HS256"])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except jwt.ExpiredSignatureError:
+        raise credentials_exception
+    except jwt.InvalidTokenError:
+        raise credentials_exception
+
+    # Ottieni l'utente dal repository o dal database
+    user = security_repository.get_user_by_username(db, username)
+
+    if user is None:
+        raise credentials_exception
+
+    return user
+
+# Endpoint per VERIFICA TOKEN E ottenere l'utente corrente DAL TOKEN
+@router.get("/users/me", response_model=Utente)
+async def read_users_me(current_user: Utente = Depends(get_user_from_token)):
+    return current_user
+
+
+################################################################
 # Esempio di produttore Kafka
 @app.post("/send_event/")
 async def send_event():
@@ -101,19 +163,7 @@ async def send_event():
 
     return {"message": "Evento inviato con successo a Kafka"}
 
-# Funzione per registrare utente
-@router.post("/register_user", response_model=Utente)
-async def register_user(username: str, password: str, email: str, db: Session = Depends(get_session_local)):
-  
-    print("Registrazione  22 in corso CIAOOOO")
-    hashed_password = get_password_hash(password)
-    user = user_repository.create_user(db, username, email, hashed_password)
-    
-    # Invia l'evento di creazione utente a Kafka
-    event_data = {"event_type": "user_created", "username": user.username}
-    producer.produce("user_events", value=str(event_data))
 
-    return user
 
 # In sintesi, questa funzione rappresenta un endpoint sicuro che restituisce alcune informazioni 
 # sull'utente corrente autenticato in risposta a una richiesta GET a "/secure-endpoint/".
@@ -144,8 +194,23 @@ def register_with_auth_service():
             detail="Failed to register with authentication service",
         )
 
-# Altri endpoint e configurazioni...
+#  endpoint ...
 
+# Funzione per registrare utente
+@router.post("/register_user", response_model=Utente)
+async def register_user(username: str, password: str, email: str, db: Session = Depends(get_session_local)):
+  
+    print("Registrazione  22 in corso CIAOOOO")
+    hashed_password = get_password_hash(password)
+    user = user_repository.create_user(db, username, email, hashed_password)
+    
+    # Invia l'evento di creazione utente a Kafka
+    event_data = {"event_type": "user_created", "username": user.username}
+    producer.produce("user_events", value=str(event_data))
+
+    return user
+
+####
 @app.get("/html", response_class=HTMLResponse)
 def get_html():
     print("dall'html di MERDA")  # Aggiunto per il debug

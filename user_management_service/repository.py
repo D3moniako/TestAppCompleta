@@ -65,8 +65,9 @@ class UserManagementRepository:
         db.refresh(user)
     ################################################################
    
+   
     def get_user_by_username(self, db: Session, username: str) -> Utente:
-        return db.exec(select(Utente).where(Utente.username == username)).first()
+        return db.execute(select(Utente).where(Utente.username == username)).first()
 
     
     ########################################################################        
@@ -94,16 +95,21 @@ class SecurityRepository:
     
     def get_user_auth_by_username(self, db: Session, username: str) -> UserAuth:
         return db.query(UserAuth).filter(UserAuth.username == username).first()
+    
+    def get_user_by_username(self, db: Session, username: str) -> Utente:
+        # return db.execute(select(Utente).where(Utente.username == username)).first() #SINTASSI VECCHIA
+        return db.query(Utente).filter(Utente.username == username).first() ## SINTASSI DIRETTA NUOVA
 
     
     def is_microservice_registered(self, db: Session, service_name: str) -> bool:
         return db.query(RegisteredMicroservice).filter_by(service_name=service_name).first() is not None
     ##########
-    def authenticate_user(self, db: Session, username: str, password: str) -> Optional[UserAuth]:
-        user = self.get_user_auth_by_username(db, username)
+    def authenticate_user(self, db: Session, username: str, password: str) -> Optional[Utente]: # cambiato da UserAuth
+        user = self.get_user_by_username(db, username)
         if user and self.verify_password(password, user.hashed_password):
             return user
         return None
+    
     #########
     def register_microservice(self, db: Session, service_name: str):
         db_microservice = RegisteredMicroservice(service_name=service_name)
