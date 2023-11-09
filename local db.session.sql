@@ -1,5 +1,4 @@
--- SELECT * FROM user
-SELECT * from tokendata
+SELECT * from utente
 -- DROP TABLE userprofile
 -- DROP TABLE userauth
 -- DROP TABLE userprofile

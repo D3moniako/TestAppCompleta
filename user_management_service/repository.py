@@ -19,9 +19,9 @@ class UserManagementRepository:
 
     
     ###
-    def create_user(self, db: Session, username: str, email: str, hashed_password: str) -> Utente:
+    def create_user(self, db: Session, username: str, email: str, hashed_password: str, role_id:Optional[str]) -> Utente:
         try:
-            utente = Utente(username=username, email=email, hashed_password=hashed_password)
+            utente = Utente(username=username, email=email, hashed_password=hashed_password, role_id=role_id)
             db.add(utente)
             db.commit()
             db.refresh(utente)
@@ -30,19 +30,53 @@ class UserManagementRepository:
             print(f"ERRORE NELLA CREAZIONE DELL 'UTENTE: {e}")
             db.rollback()
             # Gestisci l'eccezione o loggala in modo appropriato
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to create user",
+            )
+            db.rollback()
+            # Gestisci l'eccezione o loggala in modo appropriato
+            return None
+    def create_admin(self, db: Session, username: str, email: str, hashed_password: str,role_id:Optional[str]) -> Utente:
+        try:
+            utente = Utente(username=username, email=email, hashed_password=hashed_password, role_id=role_id)
+            db.add(utente)
+            db.commit()
+            db.refresh(utente)
+            return utente    
+        
+        except Exception as e:
+            print(f"ERRORE NELLA CREAZIONE DELL 'ADMIN: {e}")
+            db.rollback()
+            # Gestisci l'eccezione o loggala in modo appropriato
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Failed to create admin",
+            )
+            db.rollback()
+            # Gestisci l'eccezione o loggala in modo appropriato
             return None
 
     ###
     
     
 
-    def get_user(self, db: Session, user_id: int) -> UserAuth:
-        return db.get(UserAuth, user_id)
+    def get_user(self, db: Session, user_id: int) -> Utente:
+        return db.get(Utente, user_id)
 
-    def get_all_users(self, db: Session) -> List[UserAuth]:
-        users = db.execute(select(UserAuth)).all()
+    def get_all_users(self, db: Session) -> List[Utente]:
+        users = db.execute(select(Utente)).all()
         return users
+    
+    def get_user_by_email(self, db: Session, email: str) -> Utente:
+        return db.query(Utente).filter(Utente.email == email).first()
 
+    def get_user_by_username(self, db: Session, username: str) -> Utente:
+        return db.query(Utente).filter(Utente.username == username).first()
+    
+    def get_user_by_id(self,db: Session, user_id: int)->Utente:
+        return db.query(Utente).filter(Utente.id == user_id).first()
+    
     def create_user_profile(self, db: Session, profile: UserProfile) -> UserProfile:
         db_profile = UserProfile(**profile.dict())
         db.add(db_profile)
@@ -51,23 +85,101 @@ class UserManagementRepository:
         return db_profile
     #######################################
     def create_role(self, db: Session, role_name: str) -> UserRole:
-        role = UserRole(name=role_name)
+        role = UserRole(role_name=role_name)
         db.add(role)
         db.commit()
         db.refresh(role)
         return role
+    
+    
+    def delete_role(self, db: Session, role_name: str):
+        role = db.query(UserRole).filter_by(role_name=role_name).first()
 
-    def assign_role_to_user(self, db: Session, user_id: int, role_id: int):
-        user = db.get(UserAuth, user_id)
+        if not role:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Role with name {role_name} not found",
+            )
+
+        db.delete(role)
+        db.commit()
+        return {"message": f"Ruolo {role_name} cancellato con successo"}
+    
+    def delete_role_by_id(self, db: Session, role_id: int):
+        role = db.query(UserRole).filter_by(id=role_id).first()
+
+        if not role:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Ruolo con ID {role_id} non trovato",
+            )
+
+        db.delete(role)
+        db.commit()
+        return {"message": "Ruolo cancellato con successo"}
+    
+    
+    def get_role_by_name(self, db: Session, role_name: str) -> UserRole:
+        return db.query(UserRole).filter(UserRole.role_name == role_name).first()
+
+    def get_all_roles(self, db: Session):
+        roles = db.query(UserRole).all()
+        return roles
+    
+    def assign_role_to_user_by_id(self, db: Session, user_id: int, role_id: int):
+        user = db.get(Utente, user_id)
         role = db.get(UserRole, role_id)
         user.roles.append(role)
         db.commit()
         db.refresh(user)
+    # Assegna ruolo in base nome
+    
+    def assign_role_to_user_by_name(self, db: Session, user_id: int, role_name: str):
+        user = db.get(Utente, user_id)
+
+        # Cerca il ruolo(riga record) dal nome
+        role = db.query(UserRole).filter_by(role_name=role_name).first()
+        print(f" questo è l'id {role.id}  del ruolo {role_name}")
+        # Cerca il ruolo dal nome
+        if not role:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Role with name {role_name} not found",
+            )
+            
+        user.role_id.append(role.id)
+        db.commit()
+        db.refresh(user)
+# Aggiorna ruolo o assegna a  utente
+    def upload_role_to_user_by_name(self,db: Session, user_id: int, role_name: str):
+        role = db.query(UserRole).filter_by(role_name=role_name).first()
+        if not role:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Ruolo con nome {role_name} non trovato",
+            )
+
+        user = self.get_user_by_id(db, user_id)
+        if user:
+            if user.role_id:
+                user.role_id = role.id
+                db.commit()
+                return {"message": "Ruolo aggiornato con successo"}
+
+            user.role_id = role.id
+            db.commit()
+            return {"message": "Ruolo assegnato con successo"}
+
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Utente con ID {user_id} non trovato",
+        )
+     
+           
     ################################################################
    
    
-    def get_user_by_username(self, db: Session, username: str) -> Utente:
-        return db.execute(select(Utente).where(Utente.username == username)).first()
+    
 
     
     ########################################################################        

@@ -1,7 +1,6 @@
 from typing import Optional
 from typing import List
-\
-from sqlmodel import SQLModel, Field, Relationship, Column
+from sqlmodel import SQLModel, Field, Column,Relationship
 from sqlalchemy import String, null
 
 class TokenData(SQLModel):###
@@ -9,15 +8,17 @@ class TokenData(SQLModel):###
 #     scopes: List[str] = []
 
 
-class UserRole(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
-    role_name: str = Field(index=True, unique=True)
 
 class UserProfile(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     bio: str
     website: str
     utente_id: Optional[int] = Field(default=None, foreign_key="utente.id")
+class UserRole(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    role_name: str = Field(index=True, unique=True)
+    # utente: List["Utente"] = Relationship(back_populates="roles") #molti a molti
+    users: List["Utente"] = Relationship(back_populates="role")
 
 class Utente(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -26,7 +27,10 @@ class Utente(SQLModel, table=True):
     hashed_password: str=Field(default=None,nullable=False)
     role_id: Optional[int] = Field(default=None, foreign_key="userrole.id")
     profile_id: Optional[int] = Field(default=None, foreign_key="userprofile.id")
-   
+     # Aggiungi questa relazione per ottenere i ruoli di un utente
+    role: UserRole = Relationship(back_populates="users")
+
+    # roles: List["UserRole"] = Relationship(back_populates="utente") molti a molti
 
 class UserAuth(SQLModel, table=True):
     id: Optional[int]= Field(default=None,primary_key=True)
