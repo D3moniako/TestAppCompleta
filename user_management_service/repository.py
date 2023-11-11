@@ -19,9 +19,9 @@ class UserManagementRepository:
 
     
     ###
-    def create_user(self, db: Session, username: str, email: str, hashed_password: str, role_id:Optional[str]) -> Utente:
+    def create_user(self, db: Session, username: str, email: str, hashed_password: str, role_id:Optional[str],n_telefono:Optional[str]) -> Utente:
         try:
-            utente = Utente(username=username, email=email, hashed_password=hashed_password, role_id=role_id)
+            utente = Utente(username=username, email=email, hashed_password=hashed_password, role_id=role_id,n_telefono=n_telefono)
             db.add(utente)
             db.commit()
             db.refresh(utente)
@@ -37,9 +37,9 @@ class UserManagementRepository:
             db.rollback()
             # Gestisci l'eccezione o loggala in modo appropriato
             return None
-    def create_admin(self, db: Session, username: str, email: str, hashed_password: str,role_id:Optional[str]) -> Utente:
+    def create_admin(self, db: Session, username: str, email: str, hashed_password: str,role_id:Optional[str],n_telefono:Optional[str]) -> Utente:
         try:
-            utente = Utente(username=username, email=email, hashed_password=hashed_password, role_id=role_id)
+            utente = Utente(username=username, email=email, hashed_password=hashed_password, role_id=role_id,n_telefono=n_telefono)
             db.add(utente)
             db.commit()
             db.refresh(utente)
@@ -58,8 +58,20 @@ class UserManagementRepository:
             return None
 
     ###
-    
-    
+    def update_account_status(self, db: Session, username: str, new_status: int):
+        user = self.get_user_by_username(db, username)
+        
+        if user:
+            user.status = new_status
+            db.commit()
+            db.refresh(user)
+            return {"message": f"Stato dell'account di {username} aggiornato con successo"}
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Utente con username {username} non trovato",
+            )
+    ###    
 
     def get_user(self, db: Session, user_id: int) -> Utente:
         return db.get(Utente, user_id)
@@ -198,7 +210,7 @@ class SecurityRepository:
             username: str = payload.get("sub")
             if username is None:
                 raise credentials_exception
-            return TokenData(username=username)
+            return TokenData(sub=username, username=username)
         except JWTError:
             raise credentials_exception
         

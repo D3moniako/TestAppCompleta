@@ -22,6 +22,8 @@ class RoleMiddleware:
     async def __call__(self, token: str = Depends(oauth2_scheme), db: Session = Depends(get_session_local)):
         try:
             payload = jwt.decode(token, "SECRET_KEY", algorithms=["HS256"])
+            print("Token payload:", payload)  # Stampa il payload per debug
+
             username: str = payload.get("sub")
             print("lo username è questo : ", username)
             if username is None:
@@ -33,6 +35,10 @@ class RoleMiddleware:
             
             # Cambia questa riga
             user = db.query(Utente).filter(Utente.username == username).first()
+            print(f"Ecco la query al database di User:  {user}")
+            print(f"Username: {user.username}")
+            print(f"Role: {user.role}")
+
             if user:
                 user_role = user.role.role_name
                 if user_role not in self.allowed_roles:

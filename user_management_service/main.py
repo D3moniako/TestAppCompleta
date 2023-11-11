@@ -1,11 +1,15 @@
 import asyncio
+from h11 import Request
 import jwt
 import bcrypt
 import requests
 import uvicorn
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse,RedirectResponse
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi import FastAPI, APIRouter, Depends, HTTPException, status
+from fastapi import FastAPI, APIRouter, Depends, HTTPException, status,Header,Query
+
+from typing import List,Optional
+
 import logging
 from starlette.middleware.trustedhost import TrustedHostMiddleware
 from confluent_kafka import Producer, Consumer, KafkaError
@@ -17,13 +21,26 @@ from db.modelli import Utente, TokenData,UserRole
 from db.engine import get_db, get_engine
 from scripts.config_eureka import eureka_config
 from registrazione_service import register_service
-# Crea un'app FastAPI e un router API
+from convalida.email_manager import convalida_via_email
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 
+from convalida.sms_manager import send_whatsapp
+from starlette.requests import Request
+
+# Crea un'app FastAPI e un router API
 app = FastAPI()
 router = APIRouter()
 #### INCLUDO ROTTE #####
 app.include_router(router)
+##### INCLUDO CSS E HTML STATICO
+# Monta la cartella statics per gestire le risorse statiche
+app.mount("/statics", StaticFiles(directory="statics"), name="statics")
 
+# Configura i template Jinja2
+templates = Jinja2Templates(directory="templates")
+
+#################################
 
 # Aggiungi configurazione per il logging
 logging.basicConfig(level=logging.INFO)
@@ -79,11 +96,13 @@ async def consume_kafka_events():
             if event_data["event_type"] == "user_created":
                 username = event_data["username"]
                 email = event_data["email"]
+                n_telefono = event_data["n_telefono"]
+
                 role_id=event_data["role_id"]
                 print(f"Creating user: {username}, Email: {email}")  # Stampa le informazioni dell'utente
                 db_session = get_session_local()            
                 user_repository.create_user(
-                    db_session, username, email, hashed_password="some_hashed_password",role_id=role_id
+                    db_session, username, email, hashed_password="some_hashed_password",role_id=role_id,n_telefono=n_telefono
                 )
                 # Chiudi la sessione dopo l'uso
                 db_session.close()
@@ -135,6 +154,19 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
         "scopes": ["me"],
     }
     token = create_jwt_token(token_data)
+    if user and user.status == 0:
+        # if not send_whatsapp(user, token): # viene eseguita una volta e allo stesso tempo eseguendola so se è vera o falsa
+        #     raise HTTPException(                 # e posso usarla per gestire l'eccezione
+        #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        #         detail="Errore durante l'invio dell'messaggio whatsapp di conferma",
+        #     ) 
+        if not convalida_via_email(user, token): # viene eseguita una volta e allo stesso tempo eseguendola so se è vera o falsa
+            raise HTTPException(                 # e posso usarla per gestire l'eccezione
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Errore durante l'invio dell'email di conferma",
+            )  
+        
+    
     return {"access_token": token, "token_type": "bearer"}
 
 # Funzione per ottenere l'utente dal token
@@ -164,9 +196,43 @@ def get_user_from_token(token: str = Depends(oauth2_scheme),db: Session = Depend
 
     return user
 
+
+
+# Questo sarebbe l'endpoint per la conferma dell'account
+@app.get("/conferma_account")
+async def conferma_account(token: str = Query(..., description="Token di conferma dell'account"), db: Session = Depends(get_session_local)):
+    # Estrai l'utente dal database utilizzando il token
+    user = get_user_from_token(token, db)
+    username = user.username
+    role_name = user.role.role_name
+    print(f'role_name da api conferma_account: {role_name}')
+    if user:
+        # Aggiorna lo stato dell'account nel database (simulato come un cambio di stato da 0 a 1)
+        user_repository.update_account_status(db, username, new_status=1)    
+        if role_name == 'admin':
+            redirect_url = f"http://localhost:8000/home?token={token}"
+            response = RedirectResponse(url=redirect_url, status_code=303)
+            return response
+        # return {"message": f"Account di {username} confermato con successo"}   
+    else:
+        raise HTTPException(status_code=400, detail="Token non valido")
+
+
+
+
+
+
+
+
+
+
+
+
+
 # API per ottenere l'utente corrente dal token
 @app.get("/users/me", response_model=Utente)
 async def read_users_me(current_user: Utente = Depends(get_user_from_token)):
+    # convalida_via_email(current_user)
     return current_user
 
 
@@ -322,7 +388,7 @@ def register_with_auth_service():
 ##CREA ADMIN
 ##CREA ADMIN
 @app.post("/registration_admin", response_model=Utente)
-async def registration_admin(username: str, password: str, email: str, db: Session = Depends(get_session_local)):
+async def registration_admin(username: str, password: str, email: str,n_telefono:Optional[str], db: Session = Depends(get_session_local)):
 
     # Verifica se il ruolo "admin" esiste
     admin_role = user_repository.get_role_by_name(db, role_name="admin")
@@ -350,7 +416,7 @@ async def registration_admin(username: str, password: str, email: str, db: Sessi
     # Procedi con la registrazione se entrambi i controlli passano
     hashed_password = get_password_hash(password)
     roleid = admin_role.id
-    user = user_repository.create_admin(db, username, email, hashed_password,roleid)
+    user = user_repository.create_admin(db, username, email, hashed_password,roleid,n_telefono)
     
 
     # Invia l'evento di creazione utente a Kafka
@@ -362,7 +428,7 @@ async def registration_admin(username: str, password: str, email: str, db: Sessi
 
 # API REGISTRA UTENTE 
 @app.post("/register_user", response_model=Utente)
-async def register_user(username: str, password: str, email: str, db: Session = Depends(get_session_local)):
+async def register_user(username: str, password: str, email: str,n_telefono:Optional[str], db: Session = Depends(get_session_local)):
 
     # Controllo se esiste già un utente con la stessa email
     existing_user_by_email = user_repository.get_user_by_email(db, email)
@@ -386,7 +452,7 @@ async def register_user(username: str, password: str, email: str, db: Session = 
     base_user_role = user_repository.get_role_by_name(db, role_name="base_user")
     role_id = base_user_role.id
 
-    user = user_repository.create_user(db, username, email, hashed_password,role_id)
+    user = user_repository.create_user(db, username, email, hashed_password,role_id, n_telefono)
 
 
     # Assegna automaticamente il ruolo "user_base"
@@ -401,22 +467,13 @@ async def register_user(username: str, password: str, email: str, db: Session = 
 
 
 ###########################API TEST GATAWAY##########
-@app.get("/html", response_class=HTMLResponse)
-def get_html():
-    print("dall'html di MERDA")  # Aggiunto per il debug
-    content = """
-    <html>
-        <head>
-            <title>Test HTML Endpoint</title>
-        </head>
-        <body>
-            <h1>Provalaaaaaaaaaaaa</h1>
-            <p>You can customize this HTML content based on your needs.</p>
-        </body>
-    </html>
-    """
-    return HTMLResponse(content=content)
+   # request serve per passare qualcosa che non so nel caso volessi passare dati a questa api che genera una pagina html
+@app.get("/home", response_class=HTMLResponse)
+def get_home(current_user: Utente = Depends(get_current_user)):
+    print("DALL HTML FATTO MALISSIMO")
+    return templates.TemplateResponse("admin_profile.html", {"request": {"user": current_user}})
 
+    # return "ciaoooooooo"
 @app.get('/ciao')
 async def saluta():
     return{"message":" CIAO DAL MICROSERVIZO USER_MANAGEMENT"}

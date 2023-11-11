@@ -23,8 +23,10 @@ class UserRole(SQLModel, table=True):
 class Utente(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(index=True, unique=True)
-    email: str= Field(default=None,nullable=False,unique=True)
-    hashed_password: str=Field(default=None,nullable=False)
+    email: str = Field(default=None,nullable=False,unique=True)
+    hashed_password: str =Field(default=None,nullable=False)
+    status: int = Field(default=0,nullable=False)
+    n_telefono: Optional[str] = Field(default=None,nullable=True,unique=True)
     role_id: Optional[int] = Field(default=None, foreign_key="userrole.id")
     profile_id: Optional[int] = Field(default=None, foreign_key="userprofile.id")
      # Aggiungi questa relazione per ottenere i ruoli di un utente
