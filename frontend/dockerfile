@@ -1,0 +1,12 @@
+# ... (altre istruzioni Docker)
+
+# Copia il file package.json e package-lock.json
+COPY ./frontend/package*.json /app/frontend/
+
+# Installa le dipendenze
+RUN cd /app/frontend && npm install
+
+# Copia il resto dei file del frontend
+COPY ./frontend /app/frontend
+
+# ... (altre istruzioni Docker)

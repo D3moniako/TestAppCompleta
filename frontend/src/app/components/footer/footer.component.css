@@ -1,0 +1,8 @@
+/* components/footer/footer.component.css */
+
+footer {
+    background-color: #4e1a85;
+    color: white; /*per il testo*/
+    text-align: center;
+    padding: 10px;
+  }

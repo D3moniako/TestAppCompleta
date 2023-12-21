@@ -1,0 +1,14 @@
+/* card.component.css */
+:root {
+    --images-per-row: 1; /* Imposta il numero di immagini per riga */
+  }
+mat-card {
+  width: calc(100% / var(--images-per-row) - 20px);
+  margin: 10%;  /* Aggiungiamo margini per ottenere spazio tra le card più spazio meno card */
+  box-sizing: border-box;
+}
+
+img {
+  width: 100%;
+  height: 100%;; /* Lasciamo che l'altezza si adatti in base all'immagine */
+}

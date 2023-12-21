@@ -2,9 +2,11 @@ from sqlalchemy.orm import Session
 from sqlmodel import select
 from typing import List,Optional
 from db.modelli import UserAuth, Utente, UserProfile, UserRole, TokenData, RegisteredMicroservice
-
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import and_
 from jose import JWTError,jwt
 from fastapi import Depends, HTTPException, status
+
 import bcrypt
 
 class UserManagementRepository:
@@ -17,7 +19,7 @@ class UserManagementRepository:
         db.refresh(utente_auth)
         return utente_auth
 
-    
+        
     ###
     def create_user(self, db: Session, username: str, email: str, hashed_password: str, role_id:Optional[str],n_telefono:Optional[str]) -> Utente:
         try:
@@ -56,7 +58,18 @@ class UserManagementRepository:
             db.rollback()
             # Gestisci l'eccezione o loggala in modo appropriato
             return None
-
+    ####
+    def logout_user(self, db: Session, username: str):
+        # Puoi implementare la logica del logout qui senza dover modificare il modello Utente
+        try:
+            # Aggiungi la logica del logout
+            return {"message": "Logout effettuato con successo"}
+        except Exception as e:
+            # Gestisci eventuali eccezioni durante il logout
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Errore durante il logout dell'utente",
+            )
     ###
     def update_account_status(self, db: Session, username: str, new_status: int):
         user = self.get_user_by_username(db, username)
@@ -79,6 +92,7 @@ class UserManagementRepository:
     def get_all_users(self, db: Session) -> List[Utente]:
         users = db.execute(select(Utente)).all()
         return users
+    
     
     def get_user_by_email(self, db: Session, email: str) -> Utente:
         return db.query(Utente).filter(Utente.email == email).first()
@@ -189,8 +203,84 @@ class UserManagementRepository:
      
            
     ################################################################
+   # Nuova API: Ottieni tutti gli utenti in base allo status
+    def get_users_by_status(self, db: Session, status: int) -> List[Utente]:
+        users = db.query(Utente).filter(Utente.status == status).all()
+        return users
+
+    # Nuova API: Cancella utente in base allo status
+    def delete_user_by_status(self, db: Session, status: int, username: str):
+        try:
+            user = db.query(Utente).filter(and_(Utente.status == status, Utente.username == username)).one()
+            db.delete(user)
+            db.commit()
+            return {"message": f"Utente con username {username} e status {status} cancellato con successo"}
+        except NoResultFound:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Utente con username {username} e status {status} non trovato",
+            )
+
    
-   
+    # Nuova API: Ottieni tutti gli utenti in base al ruolo
+    def get_users_by_role(self, db: Session, role_name: str) -> List[Utente]:
+        role = db.query(UserRole).filter(UserRole.role_name == role_name).first()
+        if not role:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Ruolo con nome {role_name} non trovato",
+            )
+        users = db.query(Utente).filter(Utente.role_id == role.id).all()
+        return users
+
+    # Nuova API: Cancella utente in base al nome
+    def delete_user_by_name(self, db: Session, username: str):
+        try:
+            user = db.query(Utente).filter(Utente.username == username).one()
+            db.delete(user)
+            db.commit()
+            return {"message": f"Utente con username {username} cancellato con successo"}
+        except NoResultFound:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Utente con username {username} non trovato",
+            )
+            
+     #### cancella il proprio account user       
+            
+    def delete_user(self, db: Session, user_id: int, current_user: Utente):
+        try:
+            if current_user.id != user_id:
+                # Verifica che l'utente stia cercando di cancellare il proprio account
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="Non hai i permessi per cancellare questo account",
+                )
+
+            # Esegui la cancellazione dell'utente
+            user = db.query(Utente).filter(Utente.id == user_id).first()
+            if user:
+                db.delete(user)
+                db.commit()
+                return {"message": f"Account di {current_user.username} cancellato con successo"}
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail=f"Utente con ID {user_id} non trovato",
+                )
+        except HTTPException as e:
+            # Gestisci eventuali eccezioni durante la cancellazione
+            raise e 
+    # Nuova API: Ottieni utenti in base a due criteri
+    def get_users_by_criteria(self, db: Session, role_name: str, status: int) -> List[Utente]:
+        role = db.query(UserRole).filter(UserRole.role_name == role_name).first()
+        if not role:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Ruolo con nome {role_name} non trovato",
+            )
+        users = db.query(Utente).filter(and_(Utente.role_id == role.id, Utente.status == status)).all()
+        return users
     
 
     

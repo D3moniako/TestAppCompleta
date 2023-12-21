@@ -27,7 +27,10 @@ def get_db():
         return None, "fail"
 
     return engine
-
+#MI DA LA SESSIONE
+def get_session_local():
+    engine = get_db()
+    return Session(bind=engine)
 
 # define postgres sqlalchemy engine connection
 def get_engine() -> engine:
@@ -66,3 +69,4 @@ def get_session_sqlmodel():
     engine = get_db()
     session = Session(engine)
     return session
+

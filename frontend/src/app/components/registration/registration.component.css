@@ -1,0 +1,26 @@
+/* components/registration/registration.component.css */
+
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 300px;
+  margin: auto;
+  padding: 20px; /* Aggiunto padding per spaziatura interna */
+  background-color: #D7BBF5; /* Colore di sfondo viola */
+  border-radius: 10px; /* Bordo arrotondato */
+  border: 2px solid darkorchid; /* Colore bianco per i bordi */
+  box-shadow: 0 0 0 10px #A076F9, 0 0 0 12px purple;
+}
+
+
+
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Aggiunto stile per il testo del pulsante */
+button {
+  color: rgb(168, 29, 29);
+}

@@ -1,0 +1,30 @@
+/* styles.css o il tuo file di stile specifico per app-header */
+
+mat-toolbar {
+    position: relative; /* Assicura che il position: relative; sia impostato */
+    z-index: 4; /* Imposta l'ordine di sovrapposizione */
+    width: 90%; /* Occupa il 90% della larghezza della viewport su schermi più grandi */
+    margin: 0 auto; /* Centra orizzontalmente */
+    margin-top: 20px; /* Aggiungi margine superiore */
+    margin-bottom: 20px; /* Aggiungi margine inferiore */
+    display: flex;
+    justify-content: space-between; /* Distribuisci gli elementi spazialmente */
+    align-items: center; /* Allinea al centro verticalmente */
+    border-radius: 10px; /* Bordo arrotondato */
+    border: 2px solid rgb(35, 2, 51); /* Colore bianco per i bordi */
+}
+mat-toolbar app-search-bar {
+    position: relative;
+    z-index: 4; /* Imposta un valore superiore per la barra di ricerca */
+}
+
+/* Stili per dispositivi con larghezza massima di 600px (ad esempio, dispositivi mobili) */
+@media only screen and (max-width: 600px) {
+    mat-toolbar {
+        
+        width: 100%; /* Occupa l'intera larghezza su dispositivi più piccoli */
+        flex-direction: column; /* Imposta la direzione della colonna per i dispositivi più piccoli */
+        text-align: center; /* Centra il testo */
+    }
+}
+

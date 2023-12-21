@@ -1,4 +1,4 @@
-<!-- profile.html -->
+<!-- index.html -->
 
 <!DOCTYPE html>
 <html lang="it">
@@ -7,25 +7,125 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profilo Amministratore - SoulCity</title>
     <link rel="stylesheet" href="/statics/styles/styles_admin_profile.css">
+    <link rel="stylesheet" href="/statics/styles/all.min.css">
+
 </head>
 <body>
     <header>
-        <h1>Profilo Pippone</h1>
+        <div class="cover-photo">
+            <img src="/statics/images/photo (17).jpg" alt="Cover Photo">
+        </div>
+        <div class="header-content">
+            <div class="logo">
+                <img src="/statics/images/logo(2).png" alt="SoulCity Logo">
+                <h1>SoulCity</h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Profilo</a></li>
+                    <li><a href="#">Impostazioni</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
-    <section class="profile-container">
-        <div class="profile-info">
-            <img src="/statics/images/admin_avatar.jpg" alt="Avatar Amministratore">
-            <h2>Nome </h2>
-            <p>Azienda: SoulCity</p>
-            <p>Ruolo: Amministratore</p>
-        </div>
-        <div class="company-info">
-            <h2>SoulCity</h2>
-            <p>Indirizzo: Via del Sole, 123</p>
-            <p>Città: Metropolis</p>
-            <p>Email: info@soulcity.com</p>
-            <p>Telefono: 123-456-7890</p>
-        </div>
-    </section>
+    
+    <main>
+        <section class="profile-container">
+            <div class="profile-info">
+                <div class="avatar-container">
+                    <img src="/statics/images/admin_avatar.jpg" alt="Avatar Amministratore">
+                </div>
+                <div class="text-info">
+                    <h2>Souhail Lamzouri</h2>
+                    <p>Azienda: SoulCity</p>
+                    <p>Ruolo: Amministratore</p>
+                </div>
+                <section class="bio">
+                    <h2>Biografia</h2>
+                    <p>Ciao cari SoulCitizens! 🌟 Sono Souhail Lamzouri, l'instancabile creativo e mentore che illumina il cammino di questa straordinaria comunità, orgoglioso di ricoprire il ruolo di Amministratore. La mia avventura qui è un vibrante racconto di innovazione, ispirazione e connessione umana.</p>
+
+                    <p>Immerso nell'incantevole mondo di SoulCity, la mia passione per la tecnologia e il design si fonde in armonia con la missione di creare uno spazio unico. Un luogo in cui le idee crescono in maniera senza limiti, e le connessioni si trasformano in opportunità straordinarie. 🚀</p>
+
+                    <p>SoulCity, per me, non è solo una piattaforma digitale; è una famiglia di menti creative e appassionate. Con dedizione assoluta, mi impegno a plasmare il futuro di questa comunità straordinaria. Nel mio ruolo di Amministratore, cerco costantemente nuovi modi per ispirare, motivare e connettere ciascun membro.</p>
+
+                    <p>Navigando tra le trame della nostra comunità, troverete il mio impegno nella creazione di contenuti ispiratori. Dalla scrittura appassionata di articoli che esplorano il futuro digitale, fino alla condivisione di progetti avvincenti che invitano alla riflessione e all'azione.</p>
+
+                    <p>Come custode di SoulCity, il mio obiettivo è chiaro: fare di questo luogo un faro di creatività, un'oasi di innovazione e un rifugio accogliente per le menti curiose. Ogni giorno è un nuovo capitolo nella straordinaria storia che stiamo scrivendo insieme.</p>
+
+                    <p>Unitevi a me in questo avvincente viaggio! Scoprite le opportunità, condividete le vostre passioni e sperimentate l'incredibile potere della connessione umana. SoulCity è più di una piattaforma, è il luogo in cui i sogni prendono vita e diventano realtà. 🌈✨</p>
+
+                    <p>Vi aspetto nel cuore pulsante di SoulCity, pronti a esplorare insieme le infinite possibilità che ci attendono! 🌟</p>
+                </section>
+            </div>
+            <div class="company-info">
+                <h2>SoulCity</h2>
+                <p>Indirizzo: Via del Sole, 123</p>
+                <p>Città: Metropolis</p>
+                <p>Email: info@soulcity.com</p>
+                <p>Telefono: 123-456-7890</p>
+                <div class="departments">
+                    <h3>Reparti</h3>
+                    <ul>
+                        <li>Amministrazione</li>
+                        <li>Marketing</li>
+                        <li>Sviluppo</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="photo-gallery">
+            <h2>Galleria Foto</h2>
+            <div class="photos">
+                <img src="/statics/images/photo (10).jpg" alt="Foto 1">
+                <img src="/statics/images/photo (13).jpg" alt="Foto 2">
+                <img src="/statics/images/photo (19).jpg" alt="Foto 3">
+            </div>
+        </section>
+        <section class="user-status">
+            <h2>Stato</h2>
+            <p>Sto lavorando su nuovi progetti! 🚀</p>
+        </section>
+    
+        <section class="friends-list">
+            <h2>Amici</h2>
+            <div class="friend-thumbnails">
+                <img src="/statics/images/photo (11).jpg" alt="Amico 1">
+                <img src="/statics/images/photo (20).jpg" alt="Amico 2">
+                <img src="/statics/images/photo (12).jpg" alt="Amico 3">
+                <!-- Aggiungi altri amici -->
+            </div>
+        </section>
+    
+        <section class="recent-activity">
+            <h2>Attività Recente</h2>
+            <ul>
+                <li>Ha pubblicato un nuovo progetto</li>
+                <li>Ha commentato il post di John Doe</li>
+                <li>Ha ricevuto un badge di "Creatività"</li>
+                <!-- Aggiungi altre attività recenti -->
+            </ul>
+        </section>
+    
+        <section class="profile-stats">
+            <h2>Statistiche del Profilo</h2>
+            <ul>
+                <li><strong>Post:</strong> 50</li>
+                <li><strong>Amici:</strong> 120</li>
+                <li><strong>Seguaci:</strong> 80</li>
+                <!-- Aggiungi altre statistiche -->
+            </ul>
+        </section>
+    
+        <button class="add-friend-btn">Aggiungi Amico</button>
+        <button class="send-message-btn">Invia Messaggio</button>
+    
+    </main>
+
+    <footer>
+        <p>&copy; 2023 SoulCity. Tutti i diritti riservati.</p>
+    </footer>
 </body>
 </html>

@@ -1,0 +1,13 @@
+/* components/header/header.component.css */
+
+.search-field {
+    /* background-color: white; */
+    border-radius: 25px;
+    padding: 5px 10px;
+    width: 300px; /* Regola la larghezza a tuo piacimento */
+  }
+  
+  .spacer {
+    flex: 1;
+  }
+  /* styles.css o il tuo file di stile globale */

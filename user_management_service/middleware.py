@@ -6,7 +6,13 @@ from jose import JWTError, jwt
 from db.modelli import TokenData, Utente,UserRole
 from db.engine import get_engine, get_db
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+## qui viene indicato la rotta api del servizio che verifica il token 
+## avendo usato router devo  mettere nome rotta security + rotta api  
+# che effettua verificatoken
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="security/token")
+
+
 security_repository = SecurityRepository()
 engine = get_engine()
 
@@ -18,7 +24,7 @@ def get_session_local():
 class RoleMiddleware:
     def __init__(self, allowed_roles: list):
         self.allowed_roles = allowed_roles
-    
+    print("CIAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO DAL MIDDLEWARE")
     async def __call__(self, token: str = Depends(oauth2_scheme), db: Session = Depends(get_session_local)):
         try:
             payload = jwt.decode(token, "SECRET_KEY", algorithms=["HS256"])
@@ -68,6 +74,9 @@ class RoleMiddleware:
                 detail="Could not validate credentials",
                 headers={"WWW-Authenticate": "Bearer"},
             )
-            
+            ###modificato
+def get_role_middleware(allowed_roles: list):
+    return RoleMiddleware(allowed_roles)     
+     ###       
 def get_current_user(token: str = Depends(SecurityRepository().verify_token)):
     return token

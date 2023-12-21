@@ -28,10 +28,11 @@ class Utente(SQLModel, table=True):
     status: int = Field(default=0,nullable=False)
     n_telefono: Optional[str] = Field(default=None,nullable=True,unique=True)
     role_id: Optional[int] = Field(default=None, foreign_key="userrole.id")
-    profile_id: Optional[int] = Field(default=None, foreign_key="userprofile.id")
+    #FIGHISSIMO POSSO GESTIRE LE RELAZIONI TRA TABELLE ANCHE SE SONO SU DUE MICROSERVIZI DIFFERENTI 
+    profile_id: Optional[int] = Field(default=None, foreign_key="ms_profile.profile.id")
      # Aggiungi questa relazione per ottenere i ruoli di un utente
     role: UserRole = Relationship(back_populates="users")
-
+   
     # roles: List["UserRole"] = Relationship(back_populates="utente") molti a molti
 
 class UserAuth(SQLModel, table=True):

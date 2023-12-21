@@ -1,0 +1,16 @@
+# File di sistema
+.dockerignore
+.DS_Store
+Thumbs.db
+
+# Cache di Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Altri file e directory non necessari
+venv/
+node_modules/
+dist/
+logs/
+*.log

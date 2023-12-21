@@ -1,0 +1,13 @@
+<!-- card.component.html -->
+<mat-card>
+    <mat-card-header>
+      <!-- Opzionale: intestazione card -->
+      <mat-card-title>Titolo della card</mat-card-title>
+    </mat-card-header>
+    <mat-card *ngFor="let imageUrl of imageUrls" [imageUrl]="imageUrl"></mat-card>
+    <mat-card-content>
+      <!-- Contenuto della card -->
+      Descrizione o altri elementi
+    </mat-card-content>
+  </mat-card>
+  
